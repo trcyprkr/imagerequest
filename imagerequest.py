@@ -13,8 +13,8 @@ for m in get_monitors():
     w = monitor.width
     h = monitor.height
 
-TELEGRAM_BOT_TOKEN = 'xxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' # Insert your bot token
-TELEGRAM_CHAT_ID = '-xxxxxxxxxxxxx'  # Insert your chat, channel, or group ID.  Make sure your bot is added to your channel or chat as Admin.
+TELEGRAM_BOT_TOKEN = '5312232939:AAGxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+TELEGRAM_CHAT_ID = '-100xxxxxxxxxxxxxx'
 bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     
 path = r'images/slideshow'
@@ -59,7 +59,7 @@ while True:
         cv2.imwrite(r"images\slideshow\jacksonhole.jpg", rsframe)
         jacksonhole = r'images\slideshow\jacksonhole.jpg'
         print("jackson hole")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(jacksonhole, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(jacksonhole, 'rb'), caption='jacksonhole')
         cap.release()
         cv2.destroyAllWindows()
 #########################################################################
@@ -67,61 +67,61 @@ while True:
         with open(apgar, 'wb') as handler:
             handler.write(apgarData)
             print("apgar")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(apgar, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(apgar, 'rb'), caption='apgar')
 #####################################################################            
         missoulaData = requests.get(missoulaURL).content
         with open(missoula, 'wb') as handler:
             handler.write(missoulaData)
             print("missoula")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(missoula, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(missoula, 'rb'), caption='missoula')
 #####################################################################            
         aspenData = requests.get(aspenURL).content
         with open(aspen, 'wb') as handler:
             handler.write(aspenData)
             print("aspen")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(aspen, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(aspen, 'rb'), caption='aspen')
 #####################################################################            
         boulderData = requests.get(boulderURL).content
         with open(boulder, 'wb') as handler:
             handler.write(boulderData)
             print("boulder")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(boulder, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(boulder, 'rb'), caption='boulder')
 #####################################################################            
         soprisData = requests.get(soprisURL).content
         with open(sopris, 'wb') as handler:
             handler.write(soprisData)
             print("sopris")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(sopris, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(sopris, 'rb'), caption='sopris')
 #####################################################################
         glacierbasinData = requests.get(glacierbasinURL).content
         with open(glacierbasin, 'wb') as handler:
             handler.write(glacierbasinData)
             print("glacier basin")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(glacierbasin, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(glacierbasin, 'rb'), caption='glacierbasin')
 ####################################################################
         woodparkData = requests.get(woodparkURL).content
         with open(woodpark, 'wb') as handler:
             handler.write(woodparkData)
             print("woodpark")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(woodpark, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(woodpark, 'rb'), caption='woodpark')
 #####################################################################
         pagosaData = requests.get(pagosaURL).content
         with open(pagosa, 'wb') as handler:
             handler.write(pagosaData)
             print("pagosa")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(pagosa, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(pagosa, 'rb'), caption='pagosa')
 ###############################################################################
         ourayData = requests.get(ourayURL).content
         with open(ouray, 'wb') as handler:
             handler.write(ourayData)
             print("ouray")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(ouray, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(ouray, 'rb'), caption='ouray')
 ################################################################################
         longpeakData = requests.get(longpeakURL).content
         with open(longpeak, 'wb') as handler:
             handler.write(longpeakData)
             print("longpeak")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(longpeak, 'rb'))
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(longpeak, 'rb'), caption='longpeak')
 ################################################################################
         print("Resizing Images ...")
         for root, subFolder, files in os.walk(path):
@@ -139,7 +139,8 @@ while True:
                     skipped = fileNamePath
                     print("Skipped ", fileNamePath)
                     continue
-                    bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(skipped, 'rb'))
+                    bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(skipped, 'rb'), caption='skipped')
+                    
 ################################################################
         print("Done")
         print(time.asctime())
