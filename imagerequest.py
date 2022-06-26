@@ -7,19 +7,20 @@ import time
 from datetime import datetime
 import requests
 from screeninfo import get_monitors
-for m in get_monitors():
+for m in get_monitors():            #gets the size of the current monitor
     #print(str(m))
     monitor = m
     w = monitor.width
     h = monitor.height
 
-TELEGRAM_BOT_TOKEN = '5312232939:AAGxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+TELEGRAM_BOT_TOKEN = '53xxxxxxxxxxx:AAGxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 TELEGRAM_CHAT_ID = '-100xxxxxxxxxxxxxx'
 bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
     
-path = r'images/slideshow'
+path = r'images/slideshow'  #path to image folder
 dim = (w, h)
 
+#images to be downloaded to folder for upload to telegram
 apgarURL = 'https://www.nps.gov/webcams-glac/ApgarVillage.jpg'
 missoulaURL = 'https://wingsvirtualtours.com/webcams/missoula_valley/public_html/cam/streaming/mp/current.jpg'
 aspenURL = 'https://coloradowebcam.net/webcam/aspenmtn/current.jpg'
@@ -42,6 +43,7 @@ pagosa = r'images/slideshow/pagosa.jpg'
 ouray = r'images/slideshow/ouray.jpg'
 longpeak = r'images/slideshow/longpeak.jpg'
 #***************************************************************************
+## Run program between certain hours while it is daylight in those locations
 #print(time.localtime())
 while True:
     r = time.localtime()
@@ -51,6 +53,7 @@ while True:
     if h >= 7 and h <= 21:
         print("Requesting")
 #####################################################################
+# Capture current image from live video feed
         url = 'https://youtu.be/1EiC9bvVGnk'  ##This can be changed to whatever live stream you want
         streams = streamlink.streams(url)
         cap = cv2.VideoCapture(streams["best"].url)
@@ -63,11 +66,12 @@ while True:
         cap.release()
         cv2.destroyAllWindows()
 #########################################################################
+# Request current images from still cameras
         apgarData = requests.get(apgarURL).content
         with open(apgar, 'wb') as handler:
             handler.write(apgarData)
             print("apgar")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(apgar, 'rb'), caption='apgar')
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(apgar, 'rb'), caption='apgar')  ## Upload to telegram channel using bot
 #####################################################################            
         missoulaData = requests.get(missoulaURL).content
         with open(missoula, 'wb') as handler:
@@ -123,6 +127,7 @@ while True:
             print("longpeak")
         bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(longpeak, 'rb'), caption='longpeak')
 ################################################################################
+## Resize images based on read monitor size for fitting to background of monitor
         print("Resizing Images ...")
         for root, subFolder, files in os.walk(path):
             for item in files:
@@ -142,6 +147,7 @@ while True:
                     bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(skipped, 'rb'), caption='skipped')
                     
 ################################################################
+## Cycle once an hour
         print("Done")
         print(time.asctime())
         for i in range(3600,0,-1):
