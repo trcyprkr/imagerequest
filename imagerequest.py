@@ -2,154 +2,169 @@ import telegram
 import cv2
 import streamlink
 import os
-import urllib.request
 import time
-from datetime import datetime
+import datetime as dt
 import requests
 from screeninfo import get_monitors
-for m in get_monitors():            #gets the size of the current monitor
+for m in get_monitors():
     #print(str(m))
     monitor = m
     w = monitor.width
     h = monitor.height
 
-TELEGRAM_BOT_TOKEN = '53xxxxxxxxxxx:AAGxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-TELEGRAM_CHAT_ID = '-100xxxxxxxxxxxxxx'
+TELEGRAM_BOT_TOKEN = '5312xxxxxxxxxxxxxxxxxxxxxx'
+TELEGRAM_CHAT_ID = '-10xxxxxxxxxxxxxx'
 bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
-    
-path = r'images/slideshow'  #path to image folder
-dim = (w, h)
 
-#images to be downloaded to folder for upload to telegram
-apgarURL = 'https://www.nps.gov/webcams-glac/ApgarVillage.jpg'
-missoulaURL = 'https://wingsvirtualtours.com/webcams/missoula_valley/public_html/cam/streaming/mp/current.jpg'
-aspenURL = 'https://coloradowebcam.net/webcam/aspenmtn/current.jpg'
-boulderURL = 'https://coloradowebcam.net/webcam/boulder/current.jpg'
-soprisURL = 'https://coloradowebcam.net/webcam/sopris/current.jpg'
-glacierbasinURL = 'https://www.nps.gov/webcams-romo/glacier_basin.jpeg'
-woodparkURL = 'https://coloradowebcam.net/webcam/pikespeak/current.jpg'
-pagosaURL = 'https://live5.brownrice.com/cam-images/wolfcreeksummit.jpg'
-ourayURL = 'https://coloradowebcam.net/webcam/ouraynet-town/current.jpg'
-longpeakURL = 'https://www.nps.gov/webcams-romo/longs_peak.jpg'
-#**************************************************************************
-apgar = r'images/slideshow/apgar.jpg'
-missoula = r'images/slideshow/missoula.jpg'
-aspen = r'images/slideshow/aspen.jpg'
-boulder = r'images/slideshow/boulder.jpg'
-sopris = r'images/slideshow/sopris.jpg'
-glacierbasin = r'images/slideshow/glacierbasin.jpg'
-woodpark = r'images/slideshow/woodpark.jpg'
-pagosa = r'images/slideshow/pagosa.jpg'
-ouray = r'images/slideshow/ouray.jpg'
-longpeak = r'images/slideshow/longpeak.jpg'
-#***************************************************************************
-## Run program between certain hours while it is daylight in those locations
-#print(time.localtime())
-while True:
-    r = time.localtime()
-    h = r.tm_hour
-    m = r.tm_min
-    s = r.tm_sec
-    if h >= 7 and h <= 21:
-        print("Requesting")
+def get_sleeptime(minute, second):
+    now = dt.datetime.now()
+    sched = now.replace(minute=minute, second=second)
+    sleeptime = (sched - now).total_seconds()
+    if sleeptime < 0:
+        sleeptime += 3600
+    return sleeptime
+    
+path = 'images/slideshow/'
+dim = (w, h)
+r = time.localtime()
+hr = r.tm_hour
+m = r.tm_min
+s = r.tm_sec
 #####################################################################
-# Capture current image from live video feed
-        url = 'https://youtu.be/1EiC9bvVGnk'  ##This can be changed to whatever live stream you want
-        streams = streamlink.streams(url)
+burl = [
+    'https://copyrighted.seejh.com/townsquarecache/townsquarecache.jpg',
+    'https://copyrighted.seejh.com/townsquare/townsquare.jpg',
+    'https://copyrighted.seejh.com/townsquarebw/townsquarebw.jpg',
+    'https://www.nps.gov/webcams-glac/ApgarVillage.jpg',
+    'https://wingsvirtualtours.com/webcams/missoula_valley/public_html/cam/streaming/mp/current.jpg',
+    'https://coloradowebcam.net/webcam/aspenmtn/current.jpg',
+    'https://coloradowebcam.net/webcam/boulder/current.jpg',
+    'https://coloradowebcam.net/webcam/sopris/current.jpg',
+    'https://www.nps.gov/webcams-romo/glacier_basin.jpeg',
+    'https://coloradowebcam.net/webcam/pikespeak/current.jpg',
+    'https://live5.brownrice.com/cam-images/wolfcreeksummit.jpg',
+    'https://coloradowebcam.net/webcam/ouraynet-town/current.jpg',
+    'https://www.nps.gov/webcams-romo/longs_peak.jpg',
+    'https://pixelcaster.com/live/yosemite/halfdome.jpg',
+    'https://s3.us-west-2.amazonaws.com/public.pixelcaster.com/snapshots/grandcanyon-2/latest.jpg',
+    'https://www.nps.gov/webcams-romo/alpine_visitor_center.jpg',
+    'https://www.nps.gov/webcams-glac/ApgarLookout-01.jpg',
+    'http://stl.seejh.com/tetonrange/tetonrange.jpg',
+    'https://copyrighted.seejh.com/dornans/dornans.jpg',
+    'https://copyrighted.seejh.com/jennylake/jennylake.jpg',
+    'https://livefromiceland.is/posters/akureyri.jpg',
+    'https://www.nps.gov/webcams-glac/MiddleForkBridge.jpg',
+    'https://www.nps.gov/webcams-glac/TwoMedicinePTZ.jpg',
+    'https://www.nps.gov/webcams-glac/StMaryPTZ.jpg'
+    ]
+length = len(burl)
+i = 0
+#####################################################################
+name = [
+        'Jacksonsquare1',
+        'Jacksonsquare2',
+        'Jacksonsquarebw',
+        'ApgarVillage',
+        'missoula',
+        'aspen',
+        'boulder',
+        'sopris',
+        'glacierbasin',
+        'woodlandpark',
+        'pagosasprings',
+        'ouray',
+        'longspeak',
+        'halfdome',
+        'grandcanyon',
+        'alpine_visitor_center',
+        'ApgarLookout',
+        'tetonrange',
+        'dornans',
+        'jennylake',
+        'akureyri',
+        'MiddleForkBridge',
+        'TwoMedicinePTZ',
+        'StMaryPTZ'
+        ]
+#####################################################################
+place = [
+        'images/slideshow/townsquarecache.jpg',
+        'images/slideshow/townsquare.jpg',
+        'images/slideshow/townsquarebw.jpg',
+        'images/slideshow/ApgarVillage.jpg',
+        'images/slideshow/missoula.jpg',
+        'images/slideshow/aspen.jpg',
+        'images/slideshow/boulder.jpg',
+        'images/slideshow/sopris.jpg',
+        'images/slideshow/glacierbasin.jpg',
+        'images/slideshow/woodpark.jpg',
+        'images/slideshow/pagosa.jpg',
+        'images/slideshow/ouray.jpg',
+        'images/slideshow/longpeak.jpg',
+        'images/slideshow/halfdome.jpg',
+        'images/slideshow/grandcanyon.jpg',
+        'images/slideshow/alpine_visitor_center.jpg',
+        'images/slideshow/ApgarLookout.jpg',
+        'images/slideshow/tetonrange.jpg',
+        'images/slideshow/dornans.jpg',
+        'images/slideshow/jennylake.jpg',
+        'images/slideshow/akureyri.jpg',
+        'images/slideshow/MiddleForkBridge.jpg',
+        'images/slideshow/TwoMedicinePTZ.jpg',
+        'images/slideshow/StMaryPTZ.jpg'
+        ]
+#####################VIDEOS##############################################
+vurl = [
+    'https://www.youtube.com/watch?v=Nu15hl3Eu7U', 
+    'https://www.youtube.com/watch?v=81RScKzXZPw'
+    ]
+vlength = len(vurl)
+v = 0
+vname = ['Geiranger', 'Lodalen Loen']
+#####################################################################
+if hr >= 5 and hr <= 21:
+    print("Requesting")
+#####################################################################
+    vlength = len(vurl)
+    v = 0
+    while v < vlength:
+        streams = streamlink.streams(vurl[v])
         cap = cv2.VideoCapture(streams["best"].url)
         ret, frame = cap.read()
         rsframe = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA) #width=1600, height=900
-        cv2.imwrite(r"images\slideshow\jacksonhole.jpg", rsframe)
-        jacksonhole = r'images\slideshow\jacksonhole.jpg'
-        print("jackson hole")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(jacksonhole, 'rb'), caption='jacksonhole')
+        fname = (str(path) + str(vname[v]) + ".jpg")
+        cv2.imwrite(fname, rsframe)    
+        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(fname, 'rb'), caption=vname[v])
+        print(vname[v])
         cap.release()
         cv2.destroyAllWindows()
-#########################################################################
-# Request current images from still cameras
-        apgarData = requests.get(apgarURL).content
-        with open(apgar, 'wb') as handler:
-            handler.write(apgarData)
-            print("apgar")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(apgar, 'rb'), caption='apgar')  ## Upload to telegram channel using bot
-#####################################################################            
-        missoulaData = requests.get(missoulaURL).content
-        with open(missoula, 'wb') as handler:
-            handler.write(missoulaData)
-            print("missoula")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(missoula, 'rb'), caption='missoula')
-#####################################################################            
-        aspenData = requests.get(aspenURL).content
-        with open(aspen, 'wb') as handler:
-            handler.write(aspenData)
-            print("aspen")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(aspen, 'rb'), caption='aspen')
-#####################################################################            
-        boulderData = requests.get(boulderURL).content
-        with open(boulder, 'wb') as handler:
-            handler.write(boulderData)
-            print("boulder")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(boulder, 'rb'), caption='boulder')
-#####################################################################            
-        soprisData = requests.get(soprisURL).content
-        with open(sopris, 'wb') as handler:
-            handler.write(soprisData)
-            print("sopris")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(sopris, 'rb'), caption='sopris')
-#####################################################################
-        glacierbasinData = requests.get(glacierbasinURL).content
-        with open(glacierbasin, 'wb') as handler:
-            handler.write(glacierbasinData)
-            print("glacier basin")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(glacierbasin, 'rb'), caption='glacierbasin')
-####################################################################
-        woodparkData = requests.get(woodparkURL).content
-        with open(woodpark, 'wb') as handler:
-            handler.write(woodparkData)
-            print("woodpark")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(woodpark, 'rb'), caption='woodpark')
-#####################################################################
-        pagosaData = requests.get(pagosaURL).content
-        with open(pagosa, 'wb') as handler:
-            handler.write(pagosaData)
-            print("pagosa")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(pagosa, 'rb'), caption='pagosa')
-###############################################################################
-        ourayData = requests.get(ourayURL).content
-        with open(ouray, 'wb') as handler:
-            handler.write(ourayData)
-            print("ouray")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(ouray, 'rb'), caption='ouray')
-################################################################################
-        longpeakData = requests.get(longpeakURL).content
-        with open(longpeak, 'wb') as handler:
-            handler.write(longpeakData)
-            print("longpeak")
-        bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(longpeak, 'rb'), caption='longpeak')
-################################################################################
-## Resize images based on read monitor size for fitting to background of monitor
-        print("Resizing Images ...")
-        for root, subFolder, files in os.walk(path):
-            for item in files:
-                fileNamePath = os.path.join(root, item)
-                img = cv2.imread(fileNamePath) #, cv2.IMREAD_UNCHANGED
-                #size = img.shape
-                height = img.shape[0]
-                width = img.shape[1]
-                if (width != w) and (height != h):
-                    resized = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                    cv2.imwrite(fileNamePath, resized)
-                    print("Resized ", fileNamePath)
-                else:
-                    skipped = fileNamePath
-                    print("Skipped ", fileNamePath)
-                    continue
-                    bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(skipped, 'rb'), caption='skipped')
-                    
-################################################################
-## Cycle once an hour
-        print("Done")
-        print(time.asctime())
-        for i in range(3600,0,-1):
-            time.sleep(1)
-            print("Sleeping for", i, "seconds", '\r', end='')
+        time.sleep(1)
+        v += 1
+########################################################################
+    while i < length:
+        Data = requests.get(burl[i]).content
+        with open(place[i], 'wb') as handler:
+            handler.write(Data)
+            print(name[i])
+            bot.send_photo(chat_id=TELEGRAM_CHAT_ID, photo=open(place[i], 'rb'), caption=name[i])
+        time.sleep(1)
+        i += 1
+    print("Resizing Images ...")
+    for root, subFolder, files in os.walk(path):
+        for item in files:
+            fileNamePath = os.path.join(root, item)
+            img = cv2.imread(fileNamePath) #, cv2.IMREAD_UNCHANGED
+            height = img.shape[0]
+            width = img.shape[1]
+            if (width != w) and (height != h):
+                resized = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                cv2.imwrite(fileNamePath, resized)
+                print("Resized ", fileNamePath)
+            else:
+                print("Skipped ", fileNamePath)
+                continue
+        
+    print("Sleeping...")
+    print(time.asctime())
+    time.sleep(1)
+    time.sleep(get_sleeptime(0, 0))
